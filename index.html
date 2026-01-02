@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hóa học STEM</title>
+
+  <meta name="description" content="Website Hóa học STEM dành cho học sinh THPT: nhận biết và phân loại chất, phương trình phản ứng hóa học, thí nghiệm trực quan và mô phỏng 3D giúp học Hóa hiệu quả.">
+
+  <meta name="keywords" content="hóa học STEM, học hóa THPT, nhận biết chất, phản ứng hóa học, thí nghiệm hóa học, mô phỏng 3D">
+
+  <meta name="author" content="Minh Đức">
+</head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hóa học STEM</title>
+
+<style>
+/* ================== GLOBAL ================== */
+html, body{
+  margin:0;
+  padding:0;
+  width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  min-height:100svh;
+  background:
+    radial-gradient(circle at 15% 20%, #ff5f7e55, transparent 40%),
+    radial-gradient(circle at 85% 25%, #4da6ff55, transparent 45%),
+    radial-gradient(circle at 50% 85%, #7cffcb44, transparent 50%),
+    linear-gradient(120deg, #07081f, #15153b, #2b1457);
+  color:#f5f5f5;
+  text-align:center;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* ================== ION NỀN ================== */
+.canvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  will-change:transform;
+}
+.ion{
+  position:absolute;
+  font-size:18px;
+  opacity:.35;
+  filter:drop-shadow(0 0 8px currentColor);
+}
+.pos{color:#ffb703}
+.neg{color:#4da6ff}
+.neu{color:#7cffcb}
+
+/* ================== CONTAINER ================== */
+.container{
+  position:relative;
+  z-index:1;
+  width:92%;
+  max-width:1200px;
+  margin:50px auto;
+  padding:40px;
+  border-radius:30px;
+  background:rgba(20,20,60,.85);
+  backdrop-filter:blur(16px);
+  box-shadow:0 40px 100px rgba(0,0,0,.8);
+}
+
+h1{
+  margin:0;
+  font-size:40px;
+  background:linear-gradient(90deg,#ff5f7e,#4da6ff,#7cffcb);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+h2{color:#ffd6e0}
+
+input{
+  padding:16px;
+  width:80%;
+  max-width:520px;
+  border-radius:16px;
+  border:1px solid #ff5f7e;
+  background:#08081e;
+  color:white;
+  font-size:16px;
+}
+button{
+  padding:15px 30px;
+  margin:10px;
+  border:none;
+  border-radius:18px;
+  background:#e94560;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:.25s;
+}
+button:hover{transform:translateY(-3px) scale(1.05)}
+
+.kq{
+  display:none;
+  margin:30px auto;
+  padding:26px;
+  background:#0b0b2a;
+  border-left:8px solid #ff5f7e;
+  border-radius:22px;
+  text-align:left;
+  line-height:1.85;
+  animation:fade .4s ease;
+}
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+
+/* ================== MOBILE ================== */
+@media(max-width:600px){
+  h1{font-size:28px}
+  input{width:95%}
+  .container{
+    padding:24px;
+    margin:20px auto;
+    border-radius:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NỀN ION -->
+<div class="canvas" id="canvas"></div>
+
+<div class="container">
+  <h1>🧪 WEBSITE HÓA HỌC STEM</h1>
+  <p>Nhận biết – Phân loại – Phản ứng hóa học</p>
+
+  <button onclick="showPL()">🔍 Nhận biết – phân loại</button>
+  <button onclick="showPTHH()">⚗️ Phương trình hóa học</button>
+
+  <hr>
+  <div id="main"></div>
+</div>
+
+<script>
+/* ================== ION NỀN CHUYỂN ĐỘNG ================== */
+const canvas = document.getElementById("canvas");
+const ionDefs = [
+  // ===== CATION (+) =====
+  {t:"Na⁺", c:"pos"},
+  {t:"K⁺",  c:"pos"},
+  {t:"Ca²⁺", c:"pos"},
+  {t:"Mg²⁺", c:"pos"},
+  {t:"Al³⁺", c:"pos"},
+  {t:"Fe²⁺", c:"pos"},
+  {t:"Fe³⁺", c:"pos"},
+  {t:"Cu²⁺", c:"pos"},
+  {t:"Zn²⁺", c:"pos"},
+  {t:"Ag⁺",  c:"pos"},
+  {t:"NH₄⁺", c:"pos"},
+  {t:"H⁺",   c:"pos"},
+
+  // ===== ANION (−) =====
+  {t:"Cl⁻",   c:"neg"},
+  {t:"Br⁻",   c:"neg"},
+  {t:"I⁻",    c:"neg"},
+  {t:"OH⁻",   c:"neg"},
+  {t:"NO₃⁻",  c:"neg"},
+  {t:"NO₂⁻",  c:"neg"},
+  {t:"SO₄²⁻", c:"neg"},
+  {t:"SO₃²⁻", c:"neg"},
+  {t:"CO₃²⁻", c:"neg"},
+  {t:"HCO₃⁻", c:"neg"},
+  {t:"PO₄³⁻", c:"neg"},
+  {t:"S²⁻",   c:"neg"},
+
+  // ===== PHI KIM / PHÂN TỬ =====
+  {t:"H₂",  c:"neu"},
+  {t:"O₂",  c:"neu"},
+  {t:"N₂",  c:"neu"},
+  {t:"Cl₂", c:"neu"},
+  {t:"CO₂", c:"neu"},
+  {t:"SO₂", c:"neu"},
+  {t:"NH₃", c:"neu"},
+  {t:"H₂O", c:"neu"},
+  {t:"CH₄", c:"neu"},
+  {t:"H₂S", c:"neu"}
+];
+
+const ions=[];
+for(let i=0;i<28;i++){
+  const d=ionDefs[Math.floor(Math.random()*ionDefs.length)];
+  const el=document.createElement("div");
+  el.className="ion "+d.c;
+  el.textContent=d.t;
+  canvas.appendChild(el);
+  ions.push({
+    el,
+    x:Math.random()*innerWidth,
+    y:Math.random()*innerHeight,
+    vx:(Math.random()-0.5)*0.6,
+    vy:(Math.random()-0.5)*0.6
+  });
+}
+(function animate(){
+  ions.forEach(o=>{
+    o.x+=o.vx; o.y+=o.vy;
+    if(o.x<0||o.x>innerWidth) o.vx*=-1;
+    if(o.y<0||o.y>innerHeight) o.vy*=-1;
+    o.el.style.transform=`translate(${o.x}px,${o.y}px)`;
+  });
+  requestAnimationFrame(animate);
+})();
+
+const NHAN_BIET_TONG_HOP = {
+  /* ===== AXIT – BAZƠ – MUỐI ===== */
+  "HCl": "Axit mạnh, làm quỳ tím hóa đỏ",
+  "H2SO4": "Axit mạnh, làm quỳ tím hóa đỏ",
+  "HNO3": "Axit mạnh, làm quỳ tím hóa đỏ",
+  "CH3COOH": "Axit yếu, mùi giấm, quỳ tím hóa đỏ nhạt",
+
+  "NaOH": "Bazơ mạnh, làm quỳ tím hóa xanh",
+  "KOH": "Bazơ mạnh, làm quỳ tím hóa xanh",
+  "Ca(OH)2": "Bazơ ít tan, làm quỳ tím hóa xanh",
+
+  "NaCl": "Muối trung hòa, không làm đổi màu quỳ tím",
+  "KNO3": "Muối trung hòa",
+  "NH4Cl": "Muối axit, làm quỳ tím hóa đỏ",
+
+  /* ===== ION ĐẶC TRƯNG ===== */
+  "Cl-": "Cho AgNO3 → kết tủa trắng AgCl",
+  "SO4^2-": "Cho BaCl2 → kết tủa trắng BaSO4",
+  "CO3^2-": "Cho axit → sủi bọt khí CO2",
+  "NO3-": "Không tạo kết tủa với thuốc thử thường",
+
+  "NH4+": "Cho NaOH, đun nóng → mùi khai NH3",
+  "Fe2+": "Dung dịch màu lục nhạt",
+  "Fe3+": "Dung dịch màu vàng nâu",
+  "Cu2+": "Dung dịch màu xanh lam",
+
+  /* ===== KHÍ ===== */
+  "CO2": "Làm đục nước vôi trong",
+  "SO2": "Mùi hắc, làm mất màu dung dịch brom",
+  "NH3": "Mùi khai, làm quỳ tím ẩm hóa xanh",
+  "H2": "Cháy với tiếng nổ 'bụp'",
+  "O2": "Làm que đóm cháy dở bùng cháy",
+
+  /* ===== KẾT TỦA ===== */
+  "AgCl": "Kết tủa trắng",
+  "BaSO4": "Kết tủa trắng, không tan trong axit",
+  "Cu(OH)2": "Kết tủa xanh lam",
+  "Fe(OH)2": "Kết tủa trắng xanh, hóa nâu ngoài không khí",
+  "Fe(OH)3": "Kết tủa nâu đỏ",
+  "CaCO3": "Kết tủa trắng",
+
+  /* ===== KIM LOẠI – PHI KIM ===== */
+  "Na": "Kim loại kiềm, phản ứng mạnh với nước",
+  "Fe": "Kim loại, hút nam châm",
+  "Cu": "Kim loại màu đỏ",
+  "Al": "Kim loại nhẹ, có lớp oxit bảo vệ",
+
+  "S": "Phi kim màu vàng",
+  "Cl2": "Phi kim khí, màu vàng lục",
+  "O2_khi": "Phi kim khí, không màu"
+};
+/* ================== CHUẨN HÓA CÔNG THỨC ================== */
+function chuanHoa(ct){
+  return ct
+    .replace(/\s+/g,"")
+    .replace(/₀/g,"0")
+    .replace(/₁/g,"1")
+    .replace(/₂/g,"2")
+    .replace(/₃/g,"3")
+    .replace(/₄/g,"4")
+    .replace(/₅/g,"5")
+    .replace(/₆/g,"6")
+    .replace(/₇/g,"7")
+    .replace(/₈/g,"8")
+    .replace(/₉/g,"9")
+    .replace(/⁺/g,"+")
+    .replace(/⁻|−/g,"-")
+    .replace(/²/g,"2")
+    .replace(/³/g,"3")
+    .replace(/⁴/g,"4")
+    .toUpperCase();
+}
+
+/* ================== NHẬN BIẾT ION ================== */
+const NHANBIET = {
+  // ===== ANION =====
+  "CL-": ["Ion clorua", "Kết tủa trắng AgCl với AgNO₃"],
+  "BR-": ["Ion bromua", "Kết tủa vàng nhạt AgBr"],
+  "I-": ["Ion iodua", "Kết tủa vàng đậm AgI"],
+  "NO3-": ["Ion nitrat", "Không tạo kết tủa với AgNO₃"],
+  "SO4^2-": ["Ion sunfat", "Kết tủa trắng BaSO₄ với BaCl₂"],
+  "CO3^2-": ["Ion cacbonat", "Sủi bọt CO₂ khi tác dụng axit"],
+  "HCO3-": ["Ion hiđrocacbonat", "Sủi bọt nhẹ với axit"],
+  "PO4^3-": ["Ion photphat", "Kết tủa vàng Ag₃PO₄"],
+  "S^2-": ["Ion sunfua", "Mùi trứng thối H₂S khi gặp axit"],
+
+  // ===== CATION =====
+  "NA+": ["Ion natri", "Nhuộm ngọn lửa màu vàng"],
+  "K+": ["Ion kali", "Nhuộm ngọn lửa màu tím"],
+  "NH4+": ["Ion amoni", "Mùi khai NH₃ khi đun với kiềm"],
+  "CA^2+": ["Ion canxi", "Ngọn lửa đỏ gạch"],
+  "BA^2+": ["Ion bari", "Tạo kết tủa BaSO₄ trắng"],
+  "MG^2+": ["Ion magie", "Kết tủa trắng Mg(OH)₂"],
+  "AL^3+": ["Ion nhôm", "Kết tủa keo trắng Al(OH)₃"],
+  "FE^2+": ["Ion sắt(II)", "Kết tủa xanh lục Fe(OH)₂"],
+  "FE^3+": ["Ion sắt(III)", "Kết tủa nâu đỏ Fe(OH)₃"],
+  "CU^2+": ["Ion đồng(II)", "Dung dịch màu xanh lam"],
+  "ZN^2+": ["Ion kẽm", "Kết tủa trắng Zn(OH)₂"]
+};
+
+Object.assign(NHANBIET, {
+
+  // ===== ANION MỞ RỘNG =====
+  "NO2-": ["Ion nitrit", "Bị oxi hóa thành NO₃⁻"],
+  "SO3^2-": ["Ion sunfit", "Sủi bọt SO₂ khi gặp axit"],
+  "HPO4^2-": ["Ion hiđrophotphat", "Tạo kết tủa với Ag⁺"],
+  "HS-": ["Ion hiđrosunfua", "Mùi H₂S khi axit hóa"],
+  "SIO3^2-": ["Ion silicat", "Tạo keo trắng H₂SiO₃"],
+  "CRO4^2-": ["Ion cromat", "Dung dịch màu vàng"],
+  "CR2O7^2-": ["Ion đicromat", "Dung dịch màu da cam"],
+  "MNO4-": ["Ion pemanganat", "Dung dịch tím, oxi hóa mạnh"],
+
+  // ===== CATION MỞ RỘNG =====
+  "LI+": ["Ion liti", "Nhuộm ngọn lửa đỏ thẫm"],
+  "AG+": ["Ion bạc", "Kết tủa trắng AgCl"],
+  "PB^2+": ["Ion chì", "Kết tủa trắng PbCl₂"],
+  "CR^3+": ["Ion crom(III)", "Dung dịch màu xanh lục"],
+  "HG^2+": ["Ion thủy ngân(II)", "Ion độc, phản ứng đặc trưng"],
+});
+
+Object.assign(NHANBIET, {
+
+  // ===== AXIT =====
+  "HCL": ["Axit mạnh", "Làm quỳ tím hóa đỏ"],
+  "H2SO4": ["Axit mạnh", "Tác dụng bazơ → muối + nước"],
+  "HNO3": ["Axit mạnh", "Oxi hóa mạnh"],
+  "CH3COOH": ["Axit yếu", "Mùi giấm, làm quỳ tím hóa đỏ"],
+  "H2CO3": ["Axit yếu", "Không bền, phân hủy tạo CO₂"],
+
+  // ===== BAZƠ =====
+  "NAOH": ["Bazơ mạnh", "Làm quỳ tím hóa xanh"],
+  "KOH": ["Bazơ mạnh", "Ăn mòn, tan mạnh trong nước"],
+  "CA(OH)2": ["Bazơ yếu", "Làm đục nước vôi trong khi có CO₂"],
+  "BA(OH)2": ["Bazơ mạnh", "Phản ứng với CO₂ tạo kết tủa"],
+  "NH4OH": ["Bazơ yếu", "Mùi khai NH₃"],
+
+  // ===== MUỐI =====
+  "NACL": ["Muối trung hòa", "Tan tốt trong nước"],
+  "KCL": ["Muối trung hòa", "Tan trong nước"],
+  "NA2CO3": ["Muối cacbonat", "Tác dụng axit → CO₂ ↑"],
+  "NAHCO3": ["Muối hiđrocacbonat", "Sủi bọt nhẹ với axit"],
+  "CACO3": ["Muối cacbonat", "Không tan, tác dụng axit → CO₂ ↑"],
+  "CUSO4": ["Muối đồng(II)", "Dung dịch màu xanh lam"],
+  "FECL2": ["Muối sắt(II)", "Dung dịch xanh lục nhạt"],
+  "FECL3": ["Muối sắt(III)", "Dung dịch vàng nâu"],
+  "BACL2": ["Muối bari", "Tạo kết tủa với SO₄²⁻"],
+  "AGNO3": ["Muối bạc", "Tạo kết tủa với Cl⁻"],
+
+  // ===== OXIT =====
+  "CO2": ["Oxit axit", "Làm đục nước vôi trong"],
+  "SO2": ["Oxit axit", "Mùi hắc, tẩy màu"],
+  "SO3": ["Oxit axit", "Tác dụng nước tạo H₂SO₄"],
+  "CAO": ["Oxit bazơ", "Tác dụng nước tỏa nhiệt"],
+  "AL2O3": ["Oxit lưỡng tính", "Tác dụng axit và bazơ"],
+  "FE2O3": ["Oxit bazơ", "Màu nâu đỏ"],
+
+  // ===== KHÍ =====
+  "NH3": ["Khí amoniac", "Mùi khai, làm xanh quỳ tím"],
+  "H2S": ["Khí hiđro sunfua", "Mùi trứng thối"],
+  "CL2": ["Khí clo", "Mùi xốc, tẩy màu"],
+  "O2": ["Khí oxi", "Duy trì sự cháy"],
+  "H2": ["Khí hiđro", "Cháy với ngọn lửa xanh nhạt"]
+});
+
+
+
+/* ================== GIAO DIỆN ================== */
+function showPL(){
+  main.innerHTML = `
+    <h2>🔍 Nhận biết & phân loại ion</h2>
+    <input id="c" placeholder="VD: SO₄²⁻, NH₄⁺, Na⁺">
+    <br><br>
+    <button onclick="phanLoai()">Nhận biết</button>
+    <div id="kqpl" class="kq" style="display:none"></div>
+  `;
+}
+
+/* ================== XỬ LÝ NHẬN BIẾT ================== */
+function phanLoai(){
+  const key = chuanHoa(c.value);
+  kqpl.style.display = "block";
+
+  if(NHANBIET[key]){
+    kqpl.innerHTML = `
+      👉 <b>Ion:</b> ${key}<br>
+      🧪 <b>Loại:</b> ${NHANBIET[key][0]}<br>
+      🔬 <b>Dấu hiệu:</b> ${NHANBIET[key][1]}
+    `;
+  }else{
+    kqpl.innerHTML = "❌ Chưa có dữ liệu nhận biết.";
+  }
+}
+
+/* ===== PTHH ===== */		
+const PTHH = {
+  /* ===== TRUNG HÒA ===== */
+  "HCL+NAOH":"HCl + NaOH → NaCl + H₂O | Trung hòa",
+  "H2SO4+KOH":"H₂SO₄ + 2KOH → K₂SO₄ + 2H₂O | Trung hòa",
+  "HNO3+CA(OH)2":"2HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + 2H₂O | Trung hòa",
+  "H3PO4+NAOH":"H₃PO₄ + 3NaOH → Na₃PO₄ + 3H₂O | Trung hòa",
+  "CH3COOH+NAOH":"CH₃COOH + NaOH → CH₃COONa + H₂O | Trung hòa",
+
+  /* ===== KIM LOẠI + AXIT ===== */
+  "FE+HCL":"Fe + 2HCl → FeCl₂ + H₂↑ | Sủi khí",
+  "ZN+HCL":"Zn + 2HCl → ZnCl₂ + H₂↑ | Giải phóng H₂",
+  "MG+HCL":"Mg + 2HCl → MgCl₂ + H₂↑ | Phản ứng mạnh",
+  "AL+HCL":"2Al + 6HCl → 2AlCl₃ + 3H₂↑ | Lưỡng tính",
+  "FE+H2SO4":"Fe + H₂SO₄ → FeSO₄ + H₂↑ | Axit loãng",
+
+  /* ===== MUỐI CACBONAT + AXIT ===== */
+  "CACO3+HCL":"CaCO₃ + 2HCl → CaCl₂ + CO₂↑ + H₂O | Sủi bọt",
+  "NA2CO3+HCL":"Na₂CO₃ + 2HCl → 2NaCl + CO₂↑ + H₂O | Có khí",
+  "NAHCO3+HCL":"NaHCO₃ + HCl → NaCl + CO₂↑ + H₂O | Sủi mạnh",
+  "MGCO3+HCL":"MgCO₃ + 2HCl → MgCl₂ + CO₂↑ + H₂O | Thoát khí",
+
+  /* ===== MUỐI + MUỐI (KẾT TỦA) ===== */
+  "AGNO3+NACL":"AgNO₃ + NaCl → AgCl↓ + NaNO₃ | Kết tủa trắng",
+  "AGNO3+KBR":"AgNO₃ + KBr → AgBr↓ + KNO₃ | Kết tủa vàng nhạt",
+  "AGNO3+KI":"AgNO₃ + KI → AgI↓ + KNO₃ | Kết tủa vàng",
+  "BACL2+NA2SO4":"BaCl₂ + Na₂SO₄ → BaSO₄↓ + 2NaCl | Kết tủa trắng",
+  "PB(NO3)2+KI":"Pb(NO₃)₂ + 2KI → PbI₂↓ + 2KNO₃ | Vàng",
+
+  /* ===== MUỐI + BAZƠ ===== */
+  "CUSO4+NAOH":"CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄ | Kết tủa xanh",
+  "FECL3+NAOH":"FeCl₃ + 3NaOH → Fe(OH)₃↓ + 3NaCl | Nâu đỏ",
+  "FECL2+NAOH":"FeCl₂ + 2NaOH → Fe(OH)₂↓ + 2NaCl | Xanh lục",
+  "ALCL3+NAOH":"AlCl₃ + 3NaOH → Al(OH)₃↓ + 3NaCl | Trắng keo",
+  "NH4CL+NAOH":"NH₄Cl + NaOH → NH₃↑ + NaCl + H₂O | Mùi khai",
+
+  /* ===== OXIT + NƯỚC ===== */
+  "CAO+H2O":"CaO + H₂O → Ca(OH)₂ | Tôi vôi",
+  "NA2O+H2O":"Na₂O + H₂O → 2NaOH | Tạo bazơ",
+  "SO3+H2O":"SO₃ + H₂O → H₂SO₄ | Tạo axit",
+  "CO2+H2O":"CO₂ + H₂O → H₂CO₃ | Axit yếu",
+
+  /* ===== OXIT + AXIT / BAZƠ ===== */
+  "CUO+HCL":"CuO + 2HCl → CuCl₂ + H₂O | Oxit bazơ",
+  "FE2O3+HCL":"Fe₂O₃ + 6HCl → 2FeCl₃ + 3H₂O | Oxit bazơ",
+  "ZNO+HCL":"ZnO + 2HCl → ZnCl₂ + H₂O | Lưỡng tính",
+  "AL2O3+NAOH":"Al₂O₃ + 2NaOH → 2NaAlO₂ + H₂O | Lưỡng tính",
+
+  /* ===== KIM LOẠI + MUỐI ===== */
+  "FE+CUSO4":"Fe + CuSO₄ → FeSO₄ + Cu | Đẩy kim loại",
+  "ZN+CUSO4":"Zn + CuSO₄ → ZnSO₄ + Cu | Đẩy kim loại",
+  "CU+AGNO3":"Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag | Đẩy Ag",
+
+  /* ===== PHẢN ỨNG CHÁY ===== */
+  "C+O2":"C + O₂ → CO₂ | Cháy",
+  "S+O2":"S + O₂ → SO₂ | Cháy",
+  "P+O2":"4P + 5O₂ → 2P₂O₅ | Cháy mạnh",
+  "MG+O2":"2Mg + O₂ → 2MgO | Cháy sáng",
+  "H2+O2":"2H₂ + O₂ → 2H₂O | Nổ",
+
+  /* ===== NHIỆT PHÂN ===== */
+  "CACO3":"CaCO₃ → CaO + CO₂↑ | Nhiệt phân",
+  "MGCO3":"MgCO₃ → MgO + CO₂↑ | Nhiệt phân",
+  "NAHCO3":"2NaHCO₃ → Na₂CO₃ + CO₂↑ + H₂O | Đun nóng",
+
+  /* ===== KHỬ – OXI HÓA ===== */
+  "FE2O3+AL":"Fe₂O₃ + 2Al → 2Fe + Al₂O₃ | Nhiệt nhôm",
+  "CUO+CO":"CuO + CO → Cu + CO₂ | Khử",
+  "ZN+CUO":"Zn + CuO → ZnO + Cu | Khử"
+};
+
+
+function showPTHH(){
+  main.innerHTML=`
+  <h2>⚗️ Phản ứng hóa học</h2>
+  <input id="pt" placeholder="VD: AgNO3 + NaCl">
+  <br><br>
+  <button onclick="tra()">Tra cứu</button>
+  <div id="kq" class="kq"></div>`;
+}
+function tra(){
+  const key=pt.value.replace(/\s+/g,"").toUpperCase().split("+").sort().join("+");
+  kq.style.display="block";
+  if(PTHH[key]){
+    let [ptt,mt]=PTHH[key].split("|");
+    ptt=ptt.replace("↑","<span class='gas'>↑</span>")
+           .replace("↓","<span class='precipitate'>↓</span>");
+    kq.innerHTML=`<b>${ptt}</b><br>🔬 ${mt}`;
+  }else{
+    kq.innerHTML="❌ Chưa có phản ứng.";
+  }
+}
+</script>
+
+</body>
+</html>
