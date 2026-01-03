@@ -1,142 +1,113 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta name="google-site-verification" content="D6efFLOjipv1Kh9ZCl_2PuH1JoaFkusBF1j56JIHJlg" />
+  <!-- ===== GOOGLE VERIFY ===== -->
+  <meta name="google-site-verification" content="D6efFLOjipv1Kh9ZCl_2PuH1JoaFkusBF1j56JIHJlg">
+
+  <!-- ===== META CƠ BẢN ===== -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Hóa học STEM</title>
 
-  <meta name="description" content="Website Hóa học STEM dành cho học sinh THPT: nhận biết và phân loại chất, phương trình phản ứng hóa học, thí nghiệm trực quan và mô phỏng 3D giúp học Hóa hiệu quả.">
+  <meta name="description" content="Website Hóa học STEM dành cho học sinh THPT: nhận biết, phân loại chất và phản ứng hóa học.">
+  <meta name="keywords" content="hóa học STEM, học hóa THPT, nhận biết chất, phản ứng hóa học">
+  <meta name="author" content="Minh Duc">
 
-  <meta name="keywords" content="hóa học STEM, học hóa THPT, nhận biết chất, phản ứng hóa học, thí nghiệm hóa học, mô phỏng 3D">
+  <style>
+    html, body{
+      margin:0;
+      padding:0;
+      width:100%;
+      overflow-x:hidden;
+    }
 
-  <meta name="author" content="Minh Đức">
-</head>
+    body{
+      font-family:'Segoe UI',Arial,sans-serif;
+      min-height:100svh;
+      opacity:0;
+      animation: pageFade 0.8s ease forwards;
+      background:
+        radial-gradient(circle at 15% 20%, #ff5f7e55, transparent 40%),
+        radial-gradient(circle at 85% 25%, #4da6ff55, transparent 45%),
+        radial-gradient(circle at 50% 85%, #7cffcb44, transparent 50%),
+        linear-gradient(120deg, #07081f, #15153b, #2b1457);
+      color:#f5f5f5;
+      text-align:center;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hóa học STEM</title>
+    .canvas{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+    }
 
-<style>
-/* ================== GLOBAL ================== */
-html, body{
-  margin:0;
-  padding:0;
-  width:100%;
-  overflow-x:hidden;
-}
+    .ion{
+      position:absolute;
+      font-size:18px;
+      opacity:.35;
+      filter:drop-shadow(0 0 8px currentColor);
+    }
 
-body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  min-height:100svh;
-  background:
-    radial-gradient(circle at 15% 20%, #ff5f7e55, transparent 40%),
-    radial-gradient(circle at 85% 25%, #4da6ff55, transparent 45%),
-    radial-gradient(circle at 50% 85%, #7cffcb44, transparent 50%),
-    linear-gradient(120deg, #07081f, #15153b, #2b1457);
-  color:#f5f5f5;
-  text-align:center;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-}
+    .pos{color:#ffb703}
+    .neg{color:#4da6ff}
+    .neu{color:#7cffcb}
 
-/* ================== ION NỀN ================== */
-.canvas{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  will-change:transform;
-}
-.ion{
-  position:absolute;
-  font-size:18px;
-  opacity:.35;
-  filter:drop-shadow(0 0 8px currentColor);
-}
-.pos{color:#ffb703}
-.neg{color:#4da6ff}
-.neu{color:#7cffcb}
+    @keyframes pageFade{to{opacity:1}}
 
-/* ================== CONTAINER ================== */
-.container{
-  position:relative;
-  z-index:1;
-  width:92%;
-  max-width:1200px;
-  margin:50px auto;
-  padding:40px;
-  border-radius:30px;
-  background:rgba(20,20,60,.85);
-  backdrop-filter:blur(16px);
-  box-shadow:0 40px 100px rgba(0,0,0,.8);
-}
+    .container{
+      opacity:0;
+      transform:translateY(40px) scale(0.95);
+      animation: containerIn 0.9s ease forwards;
+      animation-delay:0.2s;
+      position:relative;
+      z-index:1;
+      width:92%;
+      max-width:1200px;
+      margin:50px auto;
+      padding:40px;
+      border-radius:30px;
+      background:rgba(20,20,60,.85);
+      backdrop-filter:blur(16px);
+      box-shadow:0 40px 100px rgba(0,0,0,.8);
+    }
 
-h1{
-  margin:0;
-  font-size:40px;
-  background:linear-gradient(90deg,#ff5f7e,#4da6ff,#7cffcb);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-h2{color:#ffd6e0}
+    @keyframes containerIn{
+      to{opacity:1; transform:none;}
+    }
 
-input{
-  padding:16px;
-  width:80%;
-  max-width:520px;
-  border-radius:16px;
-  border:1px solid #ff5f7e;
-  background:#08081e;
-  color:white;
-  font-size:16px;
-}
-button{
-  padding:15px 30px;
-  margin:10px;
-  border:none;
-  border-radius:18px;
-  background:#e94560;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-  transition:.25s;
-}
-button:hover{transform:translateY(-3px) scale(1.05)}
+    button{
+      padding:15px 30px;
+      margin:10px;
+      border:none;
+      border-radius:18px;
+      background:#e94560;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+      transition:.25s;
+    }
 
-.kq{
-  display:none;
-  margin:30px auto;
-  padding:26px;
-  background:#0b0b2a;
-  border-left:8px solid #ff5f7e;
-  border-radius:22px;
-  text-align:left;
-  line-height:1.85;
-  animation:fade .4s ease;
-}
-@keyframes fade{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:none}
-}
+    button:hover{
+      transform:translateY(-3px) scale(1.05);
+    }
 
-/* ================== MOBILE ================== */
-@media(max-width:600px){
-  h1{font-size:28px}
-  input{width:95%}
-  .container{
-    padding:24px;
-    margin:20px auto;
-    border-radius:20px;
-  }
-}
-</style>
+    @media(max-width:600px){
+      h1{font-size:28px}
+      .container{
+        padding:24px;
+        margin:20px auto;
+        border-radius:20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- NỀN ION -->
 <div class="canvas" id="canvas"></div>
 
 <div class="container">
@@ -151,6 +122,7 @@ button:hover{transform:translateY(-3px) scale(1.05)}
 </div>
 
 <script>
+
 /* ================== ION NỀN CHUYỂN ĐỘNG ================== */
 const canvas = document.getElementById("canvas");
 const ionDefs = [
@@ -390,7 +362,7 @@ Object.assign(NHANBIET, {
 function showPL(){
   main.innerHTML = `
     <h2>🔍 Nhận biết & phân loại ion</h2>
-    <input id="c" placeholder="VD: SO₄²⁻, NH₄⁺, Na⁺">
+    <input id="c" placeholder="VD: AL, H2SO4, CL2">
     <br><br>
     <button onclick="phanLoai()">Nhận biết</button>
     <div id="kqpl" class="kq" style="display:none"></div>
@@ -495,7 +467,7 @@ function showPTHH(){
 }
 function tra(){
   const key=pt.value.replace(/\s+/g,"").toUpperCase().split("+").sort().join("+");
-  kq.style.display="block";
+  kq.style.display="block";3
   if(PTHH[key]){
     let [ptt,mt]=PTHH[key].split("|");
     ptt=ptt.replace("↑","<span class='gas'>↑</span>")
