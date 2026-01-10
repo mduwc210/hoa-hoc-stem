@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hóa học STEM</title>
   <style>
-    /* Giữ nguyên CSS gốc của bạn */
     html, body{ margin:0; padding:0; width:100%; overflow-x:hidden; }
     .kq{ opacity:0; transform:translateY(12px); transition:opacity .45s ease, transform .45s ease; }
     .kq.show{ opacity:1; transform:translateY(0); }
@@ -54,7 +53,6 @@
 const canvas = document.getElementById("canvas");
 const mainArea = document.getElementById("main");
 
-// Giữ nguyên các định nghĩa ion của bạn
 const ionDefs = [
   {t:"Na⁺", c:"pos"}, {t:"K⁺", c:"pos"}, {t:"Ca²⁺", c:"pos"}, {t:"Mg²⁺", c:"pos"},
   {t:"Al³⁺", c:"pos"}, {t:"Fe²⁺", c:"pos"}, {t:"Fe³⁺", c:"pos"}, {t:"Cu²⁺", c:"pos"},
@@ -107,7 +105,6 @@ function hienThiCT(s){
   );
 }
 
-// GIỮ NGUYÊN NỘI DUNG NHANBIET - CHỈ ĐỒNG BỘ KEY CHỮ HOA
 const NHANBIET = {
   "H": ["Hiđro", "Khí nhẹ nhất, cháy tạo nước"],
   "C": ["Cacbon", "Phi kim, tạo CO₂ khi cháy"],
@@ -226,10 +223,68 @@ const NHANBIET = {
   "H2S": ["Khí hiđro sunfua", "Mùi trứng thối"],
   "CL2": ["Khí clo", "Mùi xốc, tẩy màu"],
   "O2": ["Khí oxi", "Duy trì sự cháy"],
-  "H2": ["Khí hiđro", "Cháy với ngọn lửa xanh nhạt"]
+  "H2": ["Khí hiđro", "Cháy với ngọn lửa xanh nhạt"],
+  /* ===== BỔ SUNG AXIT ===== */
+  "HF": ["Axit yếu", "Ăn mòn thủy tinh, dùng để khắc chữ lên kính"],
+  "HI": ["Axit rất mạnh", "Tính khử mạnh, dễ bị oxy hóa trong không khí"],
+  "H3PO4": ["Axit trung bình", "Dùng trong sản xuất phân bón, làm quỳ tím hóa đỏ"],
+  "H2SO3": ["Axit yếu/Không bền", "Mùi hắc của SO2, làm mất màu dung dịch Brom"],
+  
+  /* ===== BỔ SUNG BAZƠ ===== */
+  "MG(OH)2": ["Bazơ không tan", "Kết tủa trắng, tan trong axit"],
+  "AL(OH)3": ["Bazơ lưỡng tính", "Kết tủa trắng keo, tan trong cả axit và kiềm dư"],
+  "FE(OH)3": ["Bazơ không tan", "Kết tủa màu nâu đỏ đặc trưng"],
+  "FE(OH)2": ["Bazơ không tan", "Kết tủa trắng xanh, hóa nâu đỏ trong không khí"],
+  "CU(OH)2": ["Bazơ không tan", "Kết tủa xanh lơ, bị nhiệt phân thành CuO đen"],
+  "ZN(OH)2": ["Bazơ lưỡng tính", "Kết tủa trắng, tan trong kiềm dư và dung dịch NH3"],
+  
+  /* ===== BỔ SUNG MUỐI ===== */
+  "AGCL": ["Muối không tan", "Kết tủa trắng, hóa đen ngoài ánh sáng"],
+  "AGBR": ["Muối không tan", "Kết tủa vàng nhạt, dùng trong kỹ thuật phim ảnh"],
+  "AGI": ["Muối không tan", "Kết tủa vàng đậm, không tan trong dung dịch NH3"],
+  "BASO4": ["Muối không tan", "Kết tủa trắng đặc biệt, không tan trong các axit mạnh"],
+  "CASO4": ["Muối ít tan", "Thành phần của thạch cao, tạo kết tủa trắng nhẹ"],
+  "FES": ["Muối sunfua", "Chất rắn màu đen, tác dụng axit giải phóng khí trứng thối H2S"],
+  "CUS": ["Muối sunfua", "Kết tủa đen, không tan trong axit loãng (HCl, H2SO4)"],
+  "PBS": ["Muối sunfua", "Kết tủa đen, dùng để nhận biết khí H2S hoặc ion Pb2+"],
+  "KMN4": ["Muối Kali pemanganat", "Thuốc tím, tinh thể màu tím đen, dung dịch màu tím"],
+  "K2CR2O7": ["Muối Kali đicromat", "Tinh thể màu da cam, tính oxy hóa rất mạnh"],
+  "NH4NO3": ["Muối amoni", "Tan mạnh, dùng làm phân bón (đạm 2 lá), tỏa nhiệt khi tan"],
+  "AG2CO3": ["Muối bạc cacbonat", "Kết tủa màu vàng nhạt, tan trong axit sủi bọt khí"],
+  "CUCL2": ["Muối đồng(II) clorua", "Tinh thể màu xanh lá, dung dịch loãng màu xanh lam"],
+  "AL2(SO4)3": ["Muối nhôm sunfat", "Phèn nhôm, dùng để làm trong nước"],
+  "MGSO4": ["Muối magie sunfat", "Muối Epsom, tan tốt trong nước, vị đắng"],
+  /* ===== CÁC OXIT ĐẶC BIỆT & QUẶNG ===== */
+  "SIO2": ["Oxit phi kim", "Cát thạch anh, không tan trong nước, tan trong HF"],
+  "CR2O3": ["Oxit bazơ/lưỡng tính", "Màu xanh lục thẫm, rất cứng, dùng tạo màu cho thủy tinh"],
+  "CRO3": ["Oxit axit", "Màu đỏ thẫm, tính oxy hóa cực mạnh, gây cháy khi tiếp xúc chất hữu cơ"],
+  "PB2O3": ["Oxit chì", "Màu vàng cam, dùng trong sản xuất thủy tinh pha lê"],
+  "HG O": ["Oxit thủy ngân", "Chất rắn màu đỏ hoặc vàng, rất độc, bị phân hủy bởi nhiệt"],
+
+  /* ===== CÁC MUỐI PHỨC TẠP & ION KIM LOẠI KIỀM THỔ ===== */
+  "CACL2": ["Muối Canxi", "Hút ẩm mạnh, dùng làm chất làm khô trong phòng thí nghiệm"],
+  "BANO32": ["Muối Bari", "Dùng tạo ngọn lửa màu xanh lá cây trong pháo hoa"],
+  "KCLO3": ["Muối Kali clorat", "Chất oxy hóa mạnh, dùng chế tạo thuốc nổ và diêm"],
+  "AG2S": ["Muối bạc sunfua", "Kết tủa màu đen, nguyên nhân khiến đồ bạc bị xỉn màu"],
+  "CU2O": ["Oxit đồng(I)", "Kết tủa màu đỏ gạch, tạo ra khi thử đường Glucozơ với Cu(OH)2"],
+
+  /* ===== HỢP CHẤT HỮU CƠ (LỚP 11 - 12) ===== */
+  "C6H12O6": ["Đường Glucozơ", "Vị ngọt, tham gia phản ứng tráng bạc tạo lớp bạc sáng"],
+  "C12H22O11": ["Đường Saccarozơ", "Đường mía, không tráng bạc nhưng thủy phân ra Glucozơ"],
+  "C6H6": ["Benzen", "Chất lỏng không màu, mùi đặc trưng, không tan trong nước"],
+  "CH4": ["Khí Metan", "Thành phần chính của khí bùn ao, khí gas sinh hoạt"],
+  "C2H2": ["Khí Axetilen", "Dùng trong đèn xì hàn cắt kim loại, tạo kết tủa vàng với AgNO3"],
+  "C3H5OH3": ["Glixerol", "Chất lỏng sánh, vị ngọt, hòa tan Cu(OH)2 tạo dung dịch xanh thẫm"],
+  "TINH BOT": ["Hồ tinh bột", "Hợp chất cao phân tử, làm xanh dung dịch Iot (I2)"],
+  "PROTEIN": ["Lòng trắng trứng", "Phản ứng màu Biure tạo màu tím, bị đông tụ khi đun nóng"],
+
+  /* ===== CÁC CHẤT ĐỘC & KHÍ HIẾM KHÁC ===== */
+  "CO": ["Oxit trung tính", "Khí không màu, rất độc, gây ngạt do chiếm chỗ Oxi trong máu"],
+  "NO": ["Oxit trung tính", "Khí không màu, hóa nâu đỏ ngay lập tức trong không khí"],
+  "NO2": ["Oxit axit", "Khí màu nâu đỏ, mùi hắc, rất độc"],
+  "O3": ["Ozon", "Dạng thù hình của Oxi, màu xanh nhạt, mùi đặc trưng, bảo vệ Trái Đất"]
 };
 
-// GIỮ NGUYÊN NỘI DUNG PTHH - CHỈ ĐỒNG BỘ THỨ TỰ KEY THEO SORT()
 const PTHH = {
   "HCL+NAOH":"HCl + NaOH → NaCl + H₂O | Dung dịch nóng lên, quỳ tím trở về màu trung tính",
   "H2SO4+KOH":"H₂SO₄ + 2KOH → K₂SO₄ + 2H₂O | Dung dịch tỏa nhiệt, mất tính axit và bazơ",
@@ -277,6 +332,78 @@ const PTHH = {
   "C2H5OH+NA": "2C₂H₅OH + 2Na → 2C₂H₅ONa + H₂↑ | Rượu loãng tác dụng với Natri giải phóng khí Hiđro",
   "CU+HNO3": "Cu + 4HNO₃(đặc) → Cu(NO₃)₂ + 2NO₂↑ + 2H₂O | Đồng tan, dung dịch hóa xanh và có khí màu nâu đỏ thoát ra",
   "AGNO3+HCL": "AgNO₃ + HCl → AgCl↓ + HNO₃ | Xuất hiện kết tủa trắng đặc trưng (dùng nhận biết gốc Clorua)"
+  "CU+S": "Cu + S → CuS | Đồng tác dụng với lưu huỳnh tạo kết tủa đen (cần nhiệt độ)",
+  "FE+CL2": "2Fe + 3Cl₂ → 2FeCl₃ | Sắt cháy trong khí Clo tạo khói màu nâu đỏ (sắt III clorua)",
+  "H2+CL2": "H₂ + Cl₂ → 2HCl | Hiđro cháy trong Clo tạo khí Hiđrô clorua không màu",
+  "P+S": "2P + 5S → P₂S₅ | Photpho tác dụng với lưu huỳnh (cần nhiệt độ cao)",
+  "AL+O2": "4Al + 3O₂ → 2Al₂O₃ | Nhôm cháy sáng tạo lớp màng oxit bảo vệ bền vững",
+  "KCLO3": "2KClO₃ → 2KCl + 3O₂↑ | Nhiệt phân muối Kali clorat (xúc tác MnO2) để điều chế Oxi",
+  "H2O2": "2H₂O₂ → 2H₂O + O₂↑ | Sự phân hủy nước oxy già tạo bọt khí Oxi (thường dùng MnO2 làm xúc tác)",
+  "H2O": "2H₂O → 2H₂↑ + O₂↑ | Điện phân nước giải phóng khí Hiđro và Oxi",
+  "CACO3+HCL": "CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑ | Cách phổ biến nhất để điều chế khí CO2 trong phòng thí nghiệm",
+  "H2SO4+NAOH": "H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O | Phản ứng trung hòa tạo muối Natri sunfat",
+  "BA(OH)2+H2SO4": "Ba(OH)₂ + H₂SO₄ → BaSO₄↓ + 2H₂O | Vừa tạo kết tủa trắng, vừa tạo nước (phản ứng rất đặc trưng)",
+  "NAOH+P2O5": "6NaOH + P₂O₅ → 2Na₃PO₄ + 3H₂O | Oxit axit tác dụng với bazơ tạo muối photphat",
+  "CO2+CA(OH)2": "CO₂ + Ca(OH)₂ → CaCO₃↓ + H₂O | Khí CO2 làm đục nước vôi trong (dùng để nhận biết CO2)",
+  "BA+H2O": "Ba + 2H₂O → Ba(OH)₂ + H₂↑ | Bari tan mạnh trong nước, sủi bọt khí và tạo dung dịch kiềm",
+  "K+H2O": "2K + 2H₂O → 2KOH + H₂↑ | Kali phản ứng mãnh liệt, có thể gây cháy nổ nhẹ với ngọn lửa màu tím",
+  "CU+FECL3": "Cu + 2FeCl₃ → CuCl₂ + 2FeCl₂ | Đồng tan trong dung dịch Sắt (III) clorua (dùng trong sản xuất mạch in)",
+  "FE+AGNO3": "Fe + 2AgNO₃ → Fe(NO₃)₂ + 2Ag↓ | Sắt đẩy Bạc ra khỏi muối, tinh thể bạc bám lấp lánh vào thanh sắt",
+  "C2H2+O2": "2C₂H₂ + 5O₂ → 4CO₂ + 2H₂O | Axetilen cháy tỏa nhiệt cực lớn (dùng trong đèn xì hàn cắt kim loại)",
+  "AGNO3+NH3+C2H2": "C₂H₂ + 2AgNO₃ + 2NH₃ → Ag₂C₂↓ + 2NH₄NO₃ | Tạo kết tủa vàng nhạt (nhận biết Axetilen bằng dung dịch bạc nitrat)",
+  "C6H12O6": "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂↑ | Phản ứng lên men rượu từ đường Glucose",
+  "FE+HNO3": "Fe + 4HNO₃(loãng) → Fe(NO₃)₃ + NO↑ + 2H₂O | Sắt tan tạo khí NO không màu hóa nâu trong không khí",
+  "CU+H2SO4": "Cu + 2H₂SO₄(đặc) → CuSO₄ + SO₂↑ + 2H₂O | Đồng tác dụng axit đặc tạo khí mùi hắc SO2",
+  /* ===== NHÓM HALOGEN & PHI KIM NÂNG CAO ===== */
+  "F2+H2O": "2F₂ + 2H₂O → 4HF + O₂ | Flo oxy hóa nước mãnh liệt ngay ở nhiệt độ thường",
+  "CL2+H2O": "Cl₂ + H₂O ⇌ HCl + HClO | Khí Clo tan một phần trong nước tạo nước Clo có tính tẩy màu",
+  "CL2+NAOH": "Cl₂ + 2NaOH → NaCl + NaClO + H₂O | Phản ứng tạo ra nước Gia-ven dùng để tẩy trắng",
+  "H2S+SO2": "2H₂S + SO₂ → 3S↓ + 2H₂O | Tạo kết tủa lưu huỳnh màu vàng (phản ứng khử khí độc)",
+  "NH3+O2": "4NH₃ + 5O₂ → 4NO + 6H₂O | Đốt cháy Amoniac có xúc tác Pt (bước đầu sản xuất axit HNO3)",
+
+  /* ===== NHÓM KIM LOẠI KIỀM, KIỀM THỔ & NHÔM ===== */
+  "AL+FE2O3": "2Al + Fe₂O₃ → Al₂O₃ + 2Fe | Phản ứng nhiệt nhôm dùng để hàn đường ray tàu hỏa",
+  "AL+H2SO4": "2Al + 3H₂SO₄(loãng) → Al₂(SO₄)₃ + 3H₂↑ | Nhôm tan trong axit sunfuric loãng giải phóng khí",
+  "BAO+H2O": "BaO + H₂O → Ba(OH)₂ | Bari oxit tan mạnh trong nước tỏa nhiệt",
+  "CA+H2O": "Ca + 2H₂O → Ca(OH)₂ + H₂↑ | Canxi tác dụng với nước ở nhiệt độ thường",
+  "NAHCO3+NAOH": "NaHCO₃ + NaOH → Na₂CO₃ + H₂O | Muối axit tác dụng với kiềm tạo muối trung hòa",
+
+  /* ===== NHÓM HỮU CƠ (LỚP 11 - 12) ===== */
+  "C2H2+H2O": "C₂H₂ + H₂O → CH₃CHO | Hiđrat hóa axetilen tạo ra anđehit axetic (xúc tác HgSO4)",
+  "C2H5OH+CH3COOH": "CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O | Phản ứng este hóa tạo este mùi thơm đặc trưng",
+  "C6H12O6+AGNO3+NH3": "C₆H₁₂O₆ + 2AgNO₃ + 2NH₃ + H₂O → C₆H₁₁O₇NH₄ + 2Ag↓ + 2NH₄NO₃ | Phản ứng tráng bạc của Glucozơ",
+  "C6H6+BR2": "C₆H₆ + Br₂ → C₆H₅Br + HBr | Benzen phản ứng thế với Brom (xúc tác bột Fe)",
+  "C12H22O11+H2O": "C₁₂H₂₂O₁₁ + H₂O → C₆H₁₂O₆ + C₆H₁₂O₆ | Thủy phân đường Saccarozơ tạo Glucozơ và Fructozơ",
+
+  /* ===== PHẢN ỨNG NHẬN BIẾT & HIỆN TƯỢNG ĐẶC BIỆT ===== */
+  "FECL3+KSCN": "FeCl₃ + 3KSCN → Fe(SCN)₃ + 3KCl | Tạo dung dịch màu đỏ máu (nhận biết ion Fe3+)",
+  "NH4NO3+NAOH": "NH₄NO₃ + NaOH → NaNO₃ + NH₃↑ + H₂O | Đun nóng nhẹ thấy có khí mùi khai thoát ra",
+  "CU+AGNO3": "Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag↓ | Đồng tan dần, dung dịch hóa xanh, bạc trắng bám vào",
+  "H2+I2": "H₂ + I₂ ⇌ 2HI | Phản ứng thuận nghịch giữa Hiđro và Iot (cần nhiệt độ)",
+  "AGNO3+FECL2": "3AgNO₃ + FeCl₂ → Fe(NO₃)₃ + 2AgCl↓ + Ag↓ | Phản ứng tạo cả kết tủa trắng và bạc kim loại",
+  /* ===== ĐIỀU CHẾ CÔNG NGHIỆP & CHU TRÌNH BIẾN ĐỔI ===== */
+  "F2+H2": "H₂ + F₂ → 2HF | Phản ứng nổ mạnh ngay trong bóng tối và ở nhiệt độ rất thấp",
+  "CL2+NAOH": "Cl₂ + 2NaOH → NaCl + NaClO + H₂O | Phản ứng tạo nước Gia-ven dùng để tẩy trắng, sát trùng",
+  "CL2+CA(OH)2": "Cl₂ + Ca(OH)₂ → CaOCl₂ + H₂O | Phản ứng tạo Clorua vôi (chất tẩy trắng, diệt khuẩn)",
+  "NH3+O2": "4NH₃ + 5O₂ → 4NO + 6H₂O | Đốt cháy Amoniac có xúc tác Pt (bước quan trọng sản xuất HNO₃)",
+  "H2S+O2": "2H₂S + 3O₂ → 2SO₂ + 2H₂O | Đốt cháy khí trứng thối trong điều kiện dư oxi",
+
+  /* ===== HỮU CƠ: ESTE, LIPIT, GLUCID & PROTEIN ===== */
+  "C2H5OH+CH3COOH": "CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O | Phản ứng este hóa tạo mùi thơm chuối chín",
+  "C6H12O6+AGNO3+NH3": "C₆H₁₂O₆ + 2AgNO₃ + 2NH₃ + H₂O → C₆H₁₁O₇NH₄ + 2Ag↓ + 2NH₄NO₃ | Phản ứng tráng bạc của Glucozơ",
+  "C12H22O11+H2O": "C₁₂H₂₂O₁₁ + H₂O → C₆H₁₂O₆ + C₆H₁₂O₆ | Thủy phân đường mía tạo Glucozơ và Fructozơ",
+  "C3H5OH3+CU(OH)2": "2C₃H₅(OH)₃ + Cu(OH)₂ → [C₃H₅(OH)₂O]₂Cu + 2H₂O | Glixerol hòa tan Cu(OH)₂ tạo dung dịch xanh thẫm",
+  "CH3NH2+HCL": "CH₃NH₂ + HCl → CH₃NH₃Cl | Amin tác dụng axit tạo muối (hiện tượng khói trắng khi dùng khí)",
+
+  /* ===== PHẢN ỨNG VÔ CƠ NÂNG CAO & ĐẶC BIỆT ===== */
+  "FECL3+KSCN": "FeCl₃ + 3KSCN → Fe(SCN)₃ + 3KCl | Tạo dung dịch màu đỏ máu cực kỳ đặc trưng (nhận biết ion Fe³⁺)",
+  "AGNO3+FECL2": "3AgNO₃ + FeCl₂ → Fe(NO₃)₃ + 2AgCl↓ + Ag↓ | Tạo cả kết tủa trắng và bạc kim loại lấp lánh",
+  "CU+H2SO4": "Cu + 2H₂SO₄(đặc, nóng) → CuSO₄ + SO₂↑ + 2H₂O | Đồng tan tạo dung dịch xanh lam và khí mùi hắc",
+  "AL+H2SO4": "2Al + 6H₂SO₄(đặc, nóng) → Al₂(SO₄)₃ + 3SO₂↑ + 6H₂O | Nhôm tan trong axit đặc nóng giải phóng khí SO₂",
+  "NAHCO3+NAOH": "NaHCO₃ + NaOH → Na₂CO₃ + H₂O | Muối axit tác dụng với kiềm tạo muối trung hòa và nước",
+  "NH4NO3+NAOH": "NH₄NO₃ + NaOH → NaNO₃ + NH₃↑ + H₂O | Đun nóng nhẹ thấy có khí mùi khai làm xanh quỳ tím ẩm",
+  "CACO3+CO2+H2O": "CaCO₃ + CO₂ + H₂O ⇌ Ca(OH)CO₃ | Giải thích sự hình thành thạch nhũ trong các hang động",
+  "FE+HNO3": "Fe + 6HNO₃(đặc, nóng) → Fe(NO₃)₃ + 3NO₂↑ + 3H₂O | Sắt tan trong axit đặc tạo khí màu nâu đỏ"
 };
 
 function showPL(){
