@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+	<meta name="google-site-verification" content="D6efFLOjipv1Kh9ZCl_2PuH1JoaFkusBF1j56JIHJlg">
+	
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hóa học STEM</title>
@@ -48,6 +50,14 @@
   <hr>
   <div id="main"></div>
 </div>
+<datalist id="list-goi-y">
+    <option value="HCl + NaOH">
+    <option value="Fe + HCl">
+    <option value="CaCO3 + HCl">
+    <option value="CuSO4 + NaOH">
+    <option value="CH4 + O2">
+    <option value="Al + NaOH">
+</datalist>
 
 <script>
 const canvas = document.getElementById("canvas");
@@ -90,19 +100,18 @@ for(let i=0;i<25;i++){
   requestAnimationFrame(animate);
 })();
 
-function chuanHoa(s){
-  return s.normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/[₀-₉]/g, d => "0123456789"["₀₁₂₃₄₅₆₇₈₉".indexOf(d)]) // Cải tiến xử lý số dưới chân
-    .replace(/\s+/g,"")
-    .toUpperCase();
+function chuanHoa(s) {
+  return s.toUpperCase()
+    .replace(/\s+/g, "") // Xóa mọi khoảng trắng
+    .normalize("NFKD")   // Chuẩn hóa tiếng Việt (nếu có)
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 function hienThiCT(s){
   const sub = {0:"₀",1:"₁",2:"₂",3:"₃",4:"₄",5:"₅",6:"₆",7:"₇",8:"₈",9:"₉"};
-  return s.replace(/([A-Za-z\)\]])(\d+)/g, (m, a, b) =>
-    a + b.replace(/\d/g, d => sub[d])
-  );
+  return s.replace(/([A-Za-z\)\]])(\d+)/g, (m, a, b) => a + b.replace(/\d/g, d => sub[d]))
+          .replace(/↑/g, "<span style='color:#7cffcb'>↑</span>") 
+          .replace(/↓/g, "<span style='color:#ff5f7e'>↓</span>");
 }
 
 const NHANBIET = {
@@ -286,124 +295,85 @@ const NHANBIET = {
 };
 
 const PTHH = {
-  "HCL+NAOH":"HCl + NaOH → NaCl + H₂O | Dung dịch nóng lên, quỳ tím trở về màu trung tính",
-  "H2SO4+KOH":"H₂SO₄ + 2KOH → K₂SO₄ + 2H₂O | Dung dịch tỏa nhiệt, mất tính axit và bazơ",
-  "CA(OH)2+HNO3":"2HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + 2H₂O | Dung dịch trong, nhiệt độ tăng nhẹ",
-  "H3PO4+NAOH":"H₃PO₄ + 3NaOH → Na₃PO₄ + 3H₂O | Quỳ tím không đổi màu sau phản ứng",
-  "FE+HCL":"Fe + 2HCl → FeCl₂ + H₂↑ | Sủi bọt khí không màu bay lên",
-  "HCL+ZN":"Zn + 2HCl → ZnCl₂ + H₂↑ | Kim loại tan dần, có khí thoát ra",
-  "HCL+MG":"Mg + 2HCl → MgCl₂ + H₂↑ | Phản ứng rất mạnh, nhiều bọt khí",
-  "AL+HCL":"2Al + 6HCl → 2AlCl₃ + 3H₂↑ | Sủi bọt khí sau khi phá lớp oxit",
-  "FE+H2SO4":"Fe + H₂SO₄ → FeSO₄ + H₂↑ | Dung dịch chuyển xanh lục nhạt",
-  "CACO3+HCL":"CaCO₃ + 2HCl → CaCl₂ + CO₂↑ + H₂O | Sủi bọt mạnh, đá vôi tan dần",
-  "HCL+NA2CO3":"Na₂CO₃ + 2HCl → 2NaCl + CO₂↑ + H₂O | Có nhiều bọt khí CO₂ thoát ra",
-  "HCL+NAHCO3":"NaHCO₃ + HCl → NaCl + CO₂↑ + H₂O | Sủi bọt nhanh, nhẹ",
-  "HCL+MGCO3":"MgCO₃ + 2HCl → MgCl₂ + CO₂↑ + H₂O | Chất rắn tan, khí thoát ra",
-  "AGNO3+NACL":"AgNO₃ + NaCl → AgCl↓ + NaNO₃ | Xuất hiện kết tủa trắng",
-  "AGNO3+KBR":"AgNO₃ + KBr → AgBr↓ + KNO₃ | Xuất hiện kết tủa vàng nhạt",
-  "AGNO3+KI":"AgNO₃ + KI → AgI↓ + KNO₃ | Xuất hiện kết tủa vàng",
-  "BACL2+NA2SO4":"BaCl₂ + Na₂SO₄ → BaSO₄↓ + 2NaCl | Kết tủa trắng không tan",
-  "KI+PB(NO3)2":"Pb(NO₃)₂ + 2KI → PbI₂↓ + 2KNO₃ | Kết tủa vàng tươi như hoa mai",
-  "CUSO4+NAOH": "CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄ | Xuất hiện kết tủa xanh lơ (đồng II hiđroxit)",
-  "FECL3+NAOH": "FeCl₃ + 3NaOH → Fe(OH)₃↓ + 3NaCl | Xuất hiện kết tủa màu nâu đỏ đặc trưng của sắt (III)",
-  "FECL2+NAOH": "FeCl₂ + 2NaOH → Fe(OH)₂↓ + 2NaCl | Xuất hiện kết tủa trắng xanh, để lâu trong không khí hóa nâu đỏ",
-  "ALCL3+NAOH": "AlCl₃ + 3NaOH → Al(OH)₃↓ + 3NaCl | Xuất hiện kết tủa trắng dạng keo, tan nếu dư kiềm",
-  "NH4CL+NAOH": "NH₄Cl + NaOH → NH₃↑ + NaCl + H₂O | Có khí mùi khai thoát ra (amoniac), làm xanh quỳ tím ẩm",
-  "CAO+H2O": "CaO + H₂O → Ca(OH)₂ | Vôi sống tan, tỏa nhiều nhiệt (quy trình tôi vôi trong xây dựng)",
-  "H2O+NA2O": "Na₂O + H₂O → 2NaOH | Natri oxit tan mạnh tạo dung dịch kiềm làm hồng phenolphthalein",
-  "H2O+SO3": "SO₃ + H₂O → H₂SO₄ | Tạo dung dịch axit sunfuric (nguyên nhân gây mưa axit trong tự nhiên)",
-  "CO2+H2O": "CO₂ + H₂O → H₂CO₃ | Tạo dung dịch axit yếu (phản ứng trong các loại nước giải khát có ga)",
-  "CUO+HCL": "CuO + 2HCl → CuCl₂ + H₂O | Bột CuO màu đen tan dần, tạo dung dịch màu xanh lá mạ",
-  "FE2O3+HCL": "Fe₂O₃ + 6HCl → 2FeCl₃ + 3H₂O | Bột rỉ sắt tan dần, tạo dung dịch màu vàng nâu",
-  "AL2O3+NAOH": "Al₂O₃ + 2NaOH → 2NaAlO₂ + H₂O | Bột nhôm oxit tan trong dung dịch kiềm (ứng dụng trong luyện nhôm)",
-  "CUSO4+FE": "Fe + CuSO₄ → FeSO₄ + Cu | Kim loại màu đỏ (Cu) bám ngoài đinh sắt, dung dịch xanh lam nhạt dần",
-  "AGNO3+CU": "Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag | Đồng tan dần, dung dịch hóa xanh, tinh thể bạc sáng trắng bám vào thanh đồng",
-  "C+O2": "C + O₂ → CO₂ | Than cháy tỏa nhiều nhiệt, cung cấp năng lượng cho đun nấu, sản xuất",
-  "O2+P": "4P + 5O₂ → 2P₂O₅ | Photpho cháy sáng rực, tạo khói trắng dày đặc dạng bột (điphotpho pentaoxit)",
-  "MG+O2": "2Mg + O₂ → 2MgO | Magie cháy sáng chói (như ánh sáng đèn flash cũ) tạo bột màu trắng",
-  "H2+O2": "2H₂ + O₂ → 2H₂O | Hiđro cháy tạo ngọn lửa xanh nhạt, phản ứng gây tiếng nổ mạnh",
-  "CACO3": "CaCO₃ → CaO + CO₂↑ | Phản ứng nung vôi ở nhiệt độ cao (1000°C) trong công nghiệp",
-  "NAHCO3": "2NaHCO₃ → Na₂CO₃ + CO₂↑ + H₂O | Bột nở phân hủy khi nướng bánh giúp bánh xốp hơn",
-  "AL+FE2O3": "Fe₂O₃ + 2Al → 2Fe + Al₂O₃ | Phản ứng nhiệt nhôm tỏa nhiệt cực lớn (dùng để hàn đường ray tàu hỏa)",
-  "CO+CUO": "CuO + CO → Cu + CO₂ | Chất rắn màu đen chuyển dần sang màu đỏ gạch (Cu) do bị khử",
-  "CH4+O2": "CH₄ + 2O₂ → CO₂ + 2H₂O | Khí Metan (khí gas) cháy tỏa nhiệt mạnh, cung cấp năng lượng sinh hoạt",
-  "BR2+C2H4": "C₂H₄ + Br₂ → C₂H₄Br₂ | Khí Etilen làm mất màu dung dịch nước Brom màu da cam (nhận biết anken)",
-  "CH3COOH+NAOH": "CH₃COOH + NaOH → CH₃COONa + H₂O | Phản ứng trung hòa giữa giấm ăn và nước xút",
-  "C2H5OH+NA": "2C₂H₅OH + 2Na → 2C₂H₅ONa + H₂↑ | Rượu loãng tác dụng với Natri giải phóng khí Hiđro",
-  "CU+HNO3": "Cu + 4HNO₃(đặc) → Cu(NO₃)₂ + 2NO₂↑ + 2H₂O | Đồng tan, dung dịch hóa xanh và có khí màu nâu đỏ thoát ra",
-  "AGNO3+HCL": "AgNO₃ + HCl → AgCl↓ + HNO₃ | Xuất hiện kết tủa trắng đặc trưng (dùng nhận biết gốc Clorua)"
-  "CU+S": "Cu + S → CuS | Đồng tác dụng với lưu huỳnh tạo kết tủa đen (cần nhiệt độ)",
-  "FE+CL2": "2Fe + 3Cl₂ → 2FeCl₃ | Sắt cháy trong khí Clo tạo khói màu nâu đỏ (sắt III clorua)",
-  "H2+CL2": "H₂ + Cl₂ → 2HCl | Hiđro cháy trong Clo tạo khí Hiđrô clorua không màu",
-  "P+S": "2P + 5S → P₂S₅ | Photpho tác dụng với lưu huỳnh (cần nhiệt độ cao)",
-  "AL+O2": "4Al + 3O₂ → 2Al₂O₃ | Nhôm cháy sáng tạo lớp màng oxit bảo vệ bền vững",
-  "KCLO3": "2KClO₃ → 2KCl + 3O₂↑ | Nhiệt phân muối Kali clorat (xúc tác MnO2) để điều chế Oxi",
-  "H2O2": "2H₂O₂ → 2H₂O + O₂↑ | Sự phân hủy nước oxy già tạo bọt khí Oxi (thường dùng MnO2 làm xúc tác)",
-  "H2O": "2H₂O → 2H₂↑ + O₂↑ | Điện phân nước giải phóng khí Hiđro và Oxi",
-  "CACO3+HCL": "CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑ | Cách phổ biến nhất để điều chế khí CO2 trong phòng thí nghiệm",
-  "H2SO4+NAOH": "H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O | Phản ứng trung hòa tạo muối Natri sunfat",
-  "BA(OH)2+H2SO4": "Ba(OH)₂ + H₂SO₄ → BaSO₄↓ + 2H₂O | Vừa tạo kết tủa trắng, vừa tạo nước (phản ứng rất đặc trưng)",
-  "NAOH+P2O5": "6NaOH + P₂O₅ → 2Na₃PO₄ + 3H₂O | Oxit axit tác dụng với bazơ tạo muối photphat",
-  "CO2+CA(OH)2": "CO₂ + Ca(OH)₂ → CaCO₃↓ + H₂O | Khí CO2 làm đục nước vôi trong (dùng để nhận biết CO2)",
-  "BA+H2O": "Ba + 2H₂O → Ba(OH)₂ + H₂↑ | Bari tan mạnh trong nước, sủi bọt khí và tạo dung dịch kiềm",
-  "K+H2O": "2K + 2H₂O → 2KOH + H₂↑ | Kali phản ứng mãnh liệt, có thể gây cháy nổ nhẹ với ngọn lửa màu tím",
-  "CU+FECL3": "Cu + 2FeCl₃ → CuCl₂ + 2FeCl₂ | Đồng tan trong dung dịch Sắt (III) clorua (dùng trong sản xuất mạch in)",
-  "FE+AGNO3": "Fe + 2AgNO₃ → Fe(NO₃)₂ + 2Ag↓ | Sắt đẩy Bạc ra khỏi muối, tinh thể bạc bám lấp lánh vào thanh sắt",
-  "C2H2+O2": "2C₂H₂ + 5O₂ → 4CO₂ + 2H₂O | Axetilen cháy tỏa nhiệt cực lớn (dùng trong đèn xì hàn cắt kim loại)",
-  "AGNO3+NH3+C2H2": "C₂H₂ + 2AgNO₃ + 2NH₃ → Ag₂C₂↓ + 2NH₄NO₃ | Tạo kết tủa vàng nhạt (nhận biết Axetilen bằng dung dịch bạc nitrat)",
-  "C6H12O6": "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂↑ | Phản ứng lên men rượu từ đường Glucose",
-  "FE+HNO3": "Fe + 4HNO₃(loãng) → Fe(NO₃)₃ + NO↑ + 2H₂O | Sắt tan tạo khí NO không màu hóa nâu trong không khí",
-  "CU+H2SO4": "Cu + 2H₂SO₄(đặc) → CuSO₄ + SO₂↑ + 2H₂O | Đồng tác dụng axit đặc tạo khí mùi hắc SO2",
-  /* ===== NHÓM HALOGEN & PHI KIM NÂNG CAO ===== */
-  "F2+H2O": "2F₂ + 2H₂O → 4HF + O₂ | Flo oxy hóa nước mãnh liệt ngay ở nhiệt độ thường",
-  "CL2+H2O": "Cl₂ + H₂O ⇌ HCl + HClO | Khí Clo tan một phần trong nước tạo nước Clo có tính tẩy màu",
-  "CL2+NAOH": "Cl₂ + 2NaOH → NaCl + NaClO + H₂O | Phản ứng tạo ra nước Gia-ven dùng để tẩy trắng",
-  "H2S+SO2": "2H₂S + SO₂ → 3S↓ + 2H₂O | Tạo kết tủa lưu huỳnh màu vàng (phản ứng khử khí độc)",
-  "NH3+O2": "4NH₃ + 5O₂ → 4NO + 6H₂O | Đốt cháy Amoniac có xúc tác Pt (bước đầu sản xuất axit HNO3)",
+  /* ===== AXIT + BAZO (TRUNG HÒA) ===== */
+  "HCL+NAOH": "HCl + NaOH → NaCl + H₂O | Dung dịch nóng lên, quỳ tím trở về màu trung tính",
+  "H2SO4+KOH": "H₂SO₄ + 2KOH → K₂SO₄ + 2H₂O | Dung dịch tỏa nhiệt mạnh",
+  "CA(OH)2+HNO3": "2HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + 2H₂O | Phản ứng tạo muối tan, tỏa nhiệt nhẹ",
+  "H3PO4+NAOH": "H₃PO₄ + 3NaOH → Na₃PO₄ + 3H₂O | Tùy tỉ lệ có thể tạo ra muối photphat khác nhau",
+  "CH3COOH+NAOH": "CH₃COOH + NaOH → CH₃COONa + H₂O | Giấm ăn tác dụng với nước xút",
 
-  /* ===== NHÓM KIM LOẠI KIỀM, KIỀM THỔ & NHÔM ===== */
-  "AL+FE2O3": "2Al + Fe₂O₃ → Al₂O₃ + 2Fe | Phản ứng nhiệt nhôm dùng để hàn đường ray tàu hỏa",
-  "AL+H2SO4": "2Al + 3H₂SO₄(loãng) → Al₂(SO₄)₃ + 3H₂↑ | Nhôm tan trong axit sunfuric loãng giải phóng khí",
-  "BAO+H2O": "BaO + H₂O → Ba(OH)₂ | Bari oxit tan mạnh trong nước tỏa nhiệt",
-  "CA+H2O": "Ca + 2H₂O → Ca(OH)₂ + H₂↑ | Canxi tác dụng với nước ở nhiệt độ thường",
-  "NAHCO3+NAOH": "NaHCO₃ + NaOH → Na₂CO₃ + H₂O | Muối axit tác dụng với kiềm tạo muối trung hòa",
+  /* ===== AXIT + KIM LOẠI (GIẢI PHÓNG KHÍ) ===== */
+  "FE+HCL": "Fe + 2HCl → FeCl₂ + H₂↑ | Sủi bọt khí không màu, dung dịch ngả xanh lục nhạt",
+  "HCL+ZN": "Zn + 2HCl → ZnCl₂ + H₂↑ | Kẽm tan dần, bọt khí thoát ra nhanh",
+  "HCL+MG": "Mg + 2HCl → MgCl₂ + H₂↑ | Phản ứng xảy ra mãnh liệt, tỏa nhiệt",
+  "AL+HCL": "2Al + 6HCl → 2AlCl₃ + 3H₂↑ | Nhôm tan, sủi bọt khí sau khi phá lớp oxit bề mặt",
+  "FE+H2SO4": "Fe + H₂SO₄ → FeSO₄ + H₂↑ | Sắt tan trong axit loãng tạo muối Sắt (II)",
 
-  /* ===== NHÓM HỮU CƠ (LỚP 11 - 12) ===== */
-  "C2H2+H2O": "C₂H₂ + H₂O → CH₃CHO | Hiđrat hóa axetilen tạo ra anđehit axetic (xúc tác HgSO4)",
-  "C2H5OH+CH3COOH": "CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O | Phản ứng este hóa tạo este mùi thơm đặc trưng",
-  "C6H12O6+AGNO3+NH3": "C₆H₁₂O₆ + 2AgNO₃ + 2NH₃ + H₂O → C₆H₁₁O₇NH₄ + 2Ag↓ + 2NH₄NO₃ | Phản ứng tráng bạc của Glucozơ",
-  "C6H6+BR2": "C₆H₆ + Br₂ → C₆H₅Br + HBr | Benzen phản ứng thế với Brom (xúc tác bột Fe)",
-  "C12H22O11+H2O": "C₁₂H₂₂O₁₁ + H₂O → C₆H₁₂O₆ + C₆H₁₂O₆ | Thủy phân đường Saccarozơ tạo Glucozơ và Fructozơ",
+  /* ===== AXIT + MUỐI (TẠO KẾT TỦA/KHÍ) ===== */
+  "CACO3+HCL": "CaCO₃ + 2HCl → CaCl₂ + CO₂↑ + H₂O | Đá vôi sủi bọt mạnh và tan dần",
+  "HCL+NA2CO3": "Na₂CO₃ + 2HCl → 2NaCl + CO₂↑ + H₂O | Khí CO₂ thoát ra làm tắt ngọn nến",
+  "HCL+NAHCO3": "NaHCO₃ + HCl → NaCl + CO₂↑ + H₂O | Phản ứng của bột nở với axit",
+  "AGNO3+HCL": "AgNO₃ + HCl → AgCl↓ + HNO₃ | Kết tủa trắng đặc trưng không tan trong axit mạnh",
+  "BACL2+H2SO4": "BaCl₂ + H₂SO₄ → BaSO₄↓ + 2HCl | Kết tủa trắng siêu bền, dùng nhận biết gốc Sunfat",
 
-  /* ===== PHẢN ỨNG NHẬN BIẾT & HIỆN TƯỢNG ĐẶC BIỆT ===== */
-  "FECL3+KSCN": "FeCl₃ + 3KSCN → Fe(SCN)₃ + 3KCl | Tạo dung dịch màu đỏ máu (nhận biết ion Fe3+)",
-  "NH4NO3+NAOH": "NH₄NO₃ + NaOH → NaNO₃ + NH₃↑ + H₂O | Đun nóng nhẹ thấy có khí mùi khai thoát ra",
-  "CU+AGNO3": "Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag↓ | Đồng tan dần, dung dịch hóa xanh, bạc trắng bám vào",
-  "H2+I2": "H₂ + I₂ ⇌ 2HI | Phản ứng thuận nghịch giữa Hiđro và Iot (cần nhiệt độ)",
-  "AGNO3+FECL2": "3AgNO₃ + FeCl₂ → Fe(NO₃)₃ + 2AgCl↓ + Ag↓ | Phản ứng tạo cả kết tủa trắng và bạc kim loại",
-  /* ===== ĐIỀU CHẾ CÔNG NGHIỆP & CHU TRÌNH BIẾN ĐỔI ===== */
-  "F2+H2": "H₂ + F₂ → 2HF | Phản ứng nổ mạnh ngay trong bóng tối và ở nhiệt độ rất thấp",
-  "CL2+NAOH": "Cl₂ + 2NaOH → NaCl + NaClO + H₂O | Phản ứng tạo nước Gia-ven dùng để tẩy trắng, sát trùng",
-  "CL2+CA(OH)2": "Cl₂ + Ca(OH)₂ → CaOCl₂ + H₂O | Phản ứng tạo Clorua vôi (chất tẩy trắng, diệt khuẩn)",
-  "NH3+O2": "4NH₃ + 5O₂ → 4NO + 6H₂O | Đốt cháy Amoniac có xúc tác Pt (bước quan trọng sản xuất HNO₃)",
-  "H2S+O2": "2H₂S + 3O₂ → 2SO₂ + 2H₂O | Đốt cháy khí trứng thối trong điều kiện dư oxi",
+  /* ===== MUỐI + MUỐI (PHẢN ỨNG TRAO ĐỔI) ===== */
+  "AGNO3+NACL": "AgNO₃ + NaCl → AgCl↓ + NaNO₃ | Xuất hiện kết tủa trắng (Bạc clorua)",
+  "AGNO3+KBR": "AgNO₃ + KBr → AgBr↓ + KNO₃ | Xuất hiện kết tủa vàng nhạt",
+  "AGNO3+KI": "AgNO₃ + KI → AgI↓ + KNO₃ | Xuất hiện kết tủa vàng đậm",
+  "BACL2+NA2SO4": "BaCl₂ + Na₂SO₄ → BaSO₄↓ + 2NaCl | Kết tủa trắng tinh",
+  "KI+PB(NO3)2": "Pb(NO₃)₂ + 2KI → PbI₂↓ + 2KNO₃ | Kết tủa vàng tươi (hiện tượng mưa vàng)",
 
-  /* ===== HỮU CƠ: ESTE, LIPIT, GLUCID & PROTEIN ===== */
-  "C2H5OH+CH3COOH": "CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O | Phản ứng este hóa tạo mùi thơm chuối chín",
-  "C6H12O6+AGNO3+NH3": "C₆H₁₂O₆ + 2AgNO₃ + 2NH₃ + H₂O → C₆H₁₁O₇NH₄ + 2Ag↓ + 2NH₄NO₃ | Phản ứng tráng bạc của Glucozơ",
-  "C12H22O11+H2O": "C₁₂H₂₂O₁₁ + H₂O → C₆H₁₂O₆ + C₆H₁₂O₆ | Thủy phân đường mía tạo Glucozơ và Fructozơ",
-  "C3H5OH3+CU(OH)2": "2C₃H₅(OH)₃ + Cu(OH)₂ → [C₃H₅(OH)₂O]₂Cu + 2H₂O | Glixerol hòa tan Cu(OH)₂ tạo dung dịch xanh thẫm",
-  "CH3NH2+HCL": "CH₃NH₂ + HCl → CH₃NH₃Cl | Amin tác dụng axit tạo muối (hiện tượng khói trắng khi dùng khí)",
+  /* ===== BAZO + MUỐI (TẠO KẾT TỦA BAZO) ===== */
+  "CUSO4+NAOH": "CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄ | Kết tủa xanh lơ đặc trưng của Đồng (II)",
+  "FECL3+NAOH": "FeCl₃ + 3NaOH → Fe(OH)₃↓ + 3NaCl | Kết tủa màu nâu đỏ rỉ sắt",
+  "FECL2+NAOH": "FeCl₂ + 2NaOH → Fe(OH)₂↓ + 2NaCl | Kết tủa trắng xanh, hóa nâu đỏ ngoài không khí",
+  "ALCL3+NAOH": "AlCl₃ + 3NaOH → Al(OH)₃↓ + 3NaCl | Kết tủa trắng keo, tan nếu kiềm dư",
+  "NH4CL+NAOH": "NH₄Cl + NaOH → NH₃↑ + NaCl + H₂O | Khí mùi khai thoát ra, làm xanh quỳ tím ẩm",
 
-  /* ===== PHẢN ỨNG VÔ CƠ NÂNG CAO & ĐẶC BIỆT ===== */
-  "FECL3+KSCN": "FeCl₃ + 3KSCN → Fe(SCN)₃ + 3KCl | Tạo dung dịch màu đỏ máu cực kỳ đặc trưng (nhận biết ion Fe³⁺)",
-  "AGNO3+FECL2": "3AgNO₃ + FeCl₂ → Fe(NO₃)₃ + 2AgCl↓ + Ag↓ | Tạo cả kết tủa trắng và bạc kim loại lấp lánh",
-  "CU+H2SO4": "Cu + 2H₂SO₄(đặc, nóng) → CuSO₄ + SO₂↑ + 2H₂O | Đồng tan tạo dung dịch xanh lam và khí mùi hắc",
-  "AL+H2SO4": "2Al + 6H₂SO₄(đặc, nóng) → Al₂(SO₄)₃ + 3SO₂↑ + 6H₂O | Nhôm tan trong axit đặc nóng giải phóng khí SO₂",
-  "NAHCO3+NAOH": "NaHCO₃ + NaOH → Na₂CO₃ + H₂O | Muối axit tác dụng với kiềm tạo muối trung hòa và nước",
-  "NH4NO3+NAOH": "NH₄NO₃ + NaOH → NaNO₃ + NH₃↑ + H₂O | Đun nóng nhẹ thấy có khí mùi khai làm xanh quỳ tím ẩm",
-  "CACO3+CO2+H2O": "CaCO₃ + CO₂ + H₂O ⇌ Ca(OH)CO₃ | Giải thích sự hình thành thạch nhũ trong các hang động",
-  "FE+HNO3": "Fe + 6HNO₃(đặc, nóng) → Fe(NO₃)₃ + 3NO₂↑ + 3H₂O | Sắt tan trong axit đặc tạo khí màu nâu đỏ"
+  /* ===== OXIT + NƯỚC / AXIT / BAZO ===== */
+  "CAO+H2O": "CaO + H₂O → Ca(OH)₂ | Vôi sống tan tỏa nhiệt cực lớn (tôi vôi)",
+  "H2O+NA2O": "Na₂O + H₂O → 2NaOH | Tạo dung dịch kiềm mạnh",
+  "H2O+SO3": "SO₃ + H₂O → H₂SO₄ | Quá trình sản xuất axit sunfuric công nghiệp",
+  "CO2+H2O": "CO₂ + H₂O ⇌ H₂CO₃ | Phản ứng thuận nghịch, tạo axit yếu trong nước ngọt",
+  "CUO+HCL": "CuO + 2HCl → CuCl₂ + H₂O | Bột đen tan tạo dung dịch màu xanh lá mạ",
+  "FE2O3+HCL": "Fe₂O₃ + 6HCl → 2FeCl₃ + 3H₂O | Rỉ sắt tan tạo dung dịch màu vàng nâu",
+  "CO2+CA(OH)2": "CO₂ + Ca(OH)₂ → CaCO₃↓ + H₂O | Nước vôi trong bị vẩn đục (nhận biết CO₂)",
+
+  /* ===== PHẢN ỨNG OXI HÓA - KHỬ (PHI KIM & KIM LOẠI) ===== */
+  "C+O2": "C + O₂ → CO₂ | Than cháy tỏa nhiệt cung cấp năng lượng",
+  "O2+P": "4P + 5O₂ → 2P₂O₅ | Photpho cháy tạo khói trắng bột mịn",
+  "MG+O2": "2Mg + O₂ → 2MgO | Cháy sáng chói như đèn flash, tạo bột trắng",
+  "H2+O2": "2H₂ + O₂ → 2H₂O | Hỗn hợp nổ mạnh theo tỉ lệ thể tích 2:1",
+  "AL+FE2O3": "Fe₂O₃ + 2Al → 2Fe + Al₂O₃ | Phản ứng nhiệt nhôm dùng hàn đường ray",
+  "CO+CUO": "CuO + CO → Cu + CO₂ | Bột đen chuyển sang đỏ gạch (Cu) dưới dòng khí CO",
+  "FE+CL2": "2Fe + 3Cl₂ → 2FeCl₃ | Sắt cháy trong Clo tạo khói nâu đỏ",
+  "CUSO4+FE": "Fe + CuSO₄ → FeSO₄ + Cu | Đồng đỏ bám vào đinh sắt, màu xanh lam nhạt dần",
+
+  /* ===== PHẢN ỨNG PHÂN HỦY ===== */
+  "CACO3": "CaCO₃ → CaO + CO₂↑ | Nung đá vôi ở nhiệt độ cao",
+  "NAHCO3": "2NaHCO₃ → Na₂CO₃ + CO₂↑ + H₂O | Phân hủy bột nở khi nướng bánh",
+  "KCLO3": "2KClO₃ → 2KCl + 3O₂↑ | Nhiệt phân có xúc tác MnO₂ để điều chế oxi",
+  "H2O2": "2H₂O₂ → 2H₂O + O₂↑ | Nước oxy già phân hủy tạo bọt khí oxi mãnh liệt",
+  "H2O": "2H₂O → 2H₂↑ + O₂↑ | Điện phân nước giải phóng khí ở hai cực",
+
+  /* ===== HÓA HỮU CƠ CƠ BẢN & NÂNG CAO ===== */
+  "CH4+O2": "CH₄ + 2O₂ → CO₂ + 2H₂O | Đốt cháy khí thiên nhiên",
+  "BR2+C2H4": "C₂H₄ + Br₂ → C₂H₄Br₂ | Nhận biết Etilen (Anken) bằng cách làm mất màu nước Brom",
+  "C2H2+O2": "2C₂H₂ + 5O₂ → 4CO₂ + 2H₂O | Đèn xì axetilen có nhiệt độ rất cao",
+  "C2H5OH+NA": "2C₂H₅OH + 2Na → 2C₂H₅ONa + H₂↑ | Rượu giải phóng khí khi gặp Natri",
+  "C6H12O6": "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂↑ | Lên men rượu từ đường nho",
+  "C2H5OH+CH3COOH": "CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O | Phản ứng este hóa tạo mùi thơm",
+  "C6H12O6+AGNO3+NH3": "C₆H₁₂O₆ + 2AgNO₃ + ... → 2Ag↓ | Phản ứng tráng gương của Glucose",
+  "C3H5OH3+CU(OH)2": "2C₃H₅(OH)₃ + Cu(OH)₂ → Phức xanh thẫm | Nhận biết Glycerol (Ancol đa chức)",
+
+  /* ===== CÁC HIỆN TƯỢNG ĐẶC BIỆT KHÁC ===== */
+  "CU+HNO3": "Cu + 4HNO₃(đặc) → Cu(NO₃)₂ + 2NO₂↑ + 2H₂O | Khí màu nâu đỏ thoát ra mạnh",
+  "CU+H2SO4": "Cu + 2H₂SO₄(đặc, nóng) → CuSO₄ + SO₂↑ + 2H₂O | Khí mùi hắc SO₂ thoát ra",
+  "FECL3+KSCN": "FeCl₃ + 3KSCN → Fe(SCN)₃ + 3KCl | Dung dịch chuyển màu đỏ máu (nhận biết Fe³⁺)",
+  "CACO3+CO2+H2O": "CaCO₃ + CO₂ + H₂O → Ca(HCO₃)₂ | Giải thích sự xâm thực núi đá vôi và tạo thạch nhũ",
+  "H2S+SO2": "2H₂S + SO₂ → 3S↓ + 2H₂O | Xuất hiện kết tủa vàng lưu huỳnh",
+  "NH3+HCL": "NH₃ + HCl → NH₄Cl | Hiện tượng khói trắng (amoni clorua) khi cho hai khí tiếp xúc",
+  "AL+NAOH": "2Al + 2NaOH + 2H₂O → 2NaAlO₂ + 3H₂↑ | Nhôm tan trong kiềm giải phóng khí Hidro"
 };
 
 function showPL(){
@@ -445,19 +415,24 @@ function showPTHH(){
   `;
 }
 
-function tra(){
-  const k = chuanHoa(document.getElementById("pt").value).split("+").sort().join("+");
+function tra() {
+  const input = document.getElementById("pt").value;
+  const k = input.split("+")
+    .map(chat => chuanHoa(chat.trim())) 
+    .sort()
+    .join("+");
+
   const kq = document.getElementById("kq");
-  kq.style.display = "block";
-
+  kq.style.display = "block"; 	 	
   kq.classList.remove("show");
-  setTimeout(()=>kq.classList.add("show"),10);
+  
+  setTimeout(() => kq.classList.add("show"), 10);
 
-  if(PTHH[k]){
-    let [p,m] = PTHH[k].split("|");
+  if (PTHH[k]) {
+    let [p, m] = PTHH[k].split("|");
     kq.innerHTML = `<b>${hienThiCT(p)}</b><br>🔬 ${m}`;
-  }else{
-    kq.innerHTML = "❌ Chưa có phản ứng.";
+  } else {
+    kq.innerHTML = "❌ Không tìm thấy phản ứng. Hãy thử kiểm tra lại nhé!";
   }
 }
 </script>
